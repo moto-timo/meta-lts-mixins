@@ -44,6 +44,26 @@ This layer depends on:
   layers: meta
   branch: wrynose
 
+This layer recommends:
+
+- URI: https://git.yoctoproject.org/meta-lts-mixins
+  layers: wrynose-rust-mixin
+  branch: wrynose/rust
+
+The Rust crate openssl-sys refuses to build against OpenSSL 4 before version
+0.9.114, and the Rust recipes in wrynose vendor older versions. Without
+wrynose/rust, cargo, and every Rust recipe built with cargo-native, fail when
+`PREFERRED_VERSION_openssl-native` selects OpenSSL 4. wrynose/rust provides
+cargo and cargo-c that vendor openssl-sys 0.9.117, but the following recipes
+still vendor an older openssl-sys and fail against OpenSSL 4 even with it:
+
+- python3-cryptography (openssl-sys 0.9.110)
+- rpm-sequoia (openssl-sys 0.9.111)
+- python3-maturin (openssl-sys 0.9.111), if it builds openssl-sys
+
+Keeping `PREFERRED_VERSION_openssl-native` at the wrynose default avoids the
+problem for native recipes, but not for target ones.
+
 Contributing
 ------------
 
