@@ -16,20 +16,24 @@ may need fixes to build against it.
 In order to make this layer Yocto Project Compatible, the layer should not
 provide new versions of packages by default. Because of this, the recipe
 provided in this layer will not be used unless that is explicitly stated. To
-use the provided openssl recipe, the following can be done:
-
-```
-# please use 'DEFAULT_PREFERENCE:your_override = ""' to keep Yocto Project Compatible
-echo 'DEFAULT_PREFERENCE = ""' >> recipes-connectivity/openssl/openssl_%.bbappend
-```
-
-Alternatively, in local.conf or a distro configuration:
+use the provided openssl recipe, add the following to local.conf or a distro
+configuration:
 
 ```
 PREFERRED_VERSION_openssl = "4.1.%"
 PREFERRED_VERSION_openssl-native = "4.1.%"
 PREFERRED_VERSION_nativesdk-openssl = "4.1.%"
 ```
+
+The layer also carries bbappends with fixes backported from openembedded-core
+master for recipes that need changes to work with OpenSSL 4:
+
+- sudo
+- python3-cryptography
+- python3-pyopenssl
+
+These fixes are only applied when `PREFERRED_VERSION_openssl` starts with
+"4", so set it as shown above rather than overriding `DEFAULT_PREFERENCE`.
 
 Dependencies
 ------------
